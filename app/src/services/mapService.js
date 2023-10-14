@@ -4,7 +4,7 @@ export default {
     async findPoints(store) {
         const { latitude, longitude, radius } = store.location;
         const type = store.type;
-        const response = await axios.post('http://193.104.57.178:5000/Points/FindPoints', {
+        const response = await axios.post('https://api.vtb-light-fire.ru/Points/FindPoints', {
             latitude,
             longitude,
             radius,
