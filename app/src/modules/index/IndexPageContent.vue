@@ -10,7 +10,7 @@
     </base-header>
 
     <base-wrapper>
-      <ol-map/>
+      <my-map/>
     </base-wrapper>
 
   </base-content>
@@ -18,10 +18,10 @@
 
 <script setup>
 import BaseWrapper from "@/components/base/wrapper/BaseWrapper.vue";
-import OlMap from "@/components/Map/OlMap.vue";
 import BaseHeader from "@/components/base/header/BaseHeader.vue";
 import IconVTB from "@/components/icons/IconVTB.vue";
 import BaseContent from "@/components/base/content/BaseContent.vue";
+import MyMap from "@/components/MyMap/MyMap.vue";
 </script>
 
 <style lang="scss" scoped>
