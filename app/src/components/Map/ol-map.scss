@@ -1,0 +1,32 @@
+.map {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  &__actions {
+    display: flex;
+    margin-bottom: 2rem;
+  }
+  &__ol {
+    height: $map-height;
+    width: 100%;
+  }
+}
+
+.el-radio-button__inner {
+  font-size: 1.6rem;
+  color: white;
+}
+
+.el-radio-button__orig-radio:checked + .el-radio-button__inner {
+  background-color: white;
+  color: #326DC6;
+}
+
+.el-radio-button__orig-radio:not(:checked) + .el-radio-button__inner {
+  background-color: #326DC6;
+}
+
+.el-radio-button {
+  height: 2.5rem;
+  line-height: 2.5rem;
+}
