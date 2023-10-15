@@ -7,37 +7,33 @@
         <el-radio size="large" label="Atm">Банкоматы</el-radio>
       </el-radio-group>
     </div>
-    <YandexMap class="map__yandex" :coordinates="coordinates" @created="onMapCreated">
-      <YandexMarker type="Point" :marker-id="markerId" :coordinates="coordinates"/>
+    <YandexMap class="map__yandex" :coordinates="coordinates" @created="initMap">
+      <YandexMarker type="Point" :marker-id="'user'" :coordinates="coordinates"/>
+      <YandexObjectManager :features="features"/>
+      <YandexMarker type="Point"  :marker-id="features[0].id" :coordinates="features[0].geometry.coordinates" />
     </YandexMap>
   </div>
 </template>
 
 <script setup>
-import { YandexMap, YandexMarker} from "vue-yandex-maps";
-import { onMounted, ref } from 'vue';
+import { YandexMap, YandexMarker, YandexObjectManager } from "vue-yandex-maps";
+import { onMounted, ref, watch } from 'vue';
 import { useMapStore } from '@/stores/mapStore';
 import mapService from '@/services/mapService';
 
 const coordinates = ref([55.751244, 37.618423]); // Координаты Москвы по умолчанию
 const mapStore = useMapStore();
-const markerId = ref(1)
-const ymaps = ref();
-const map = ref();
-
-console.log(ymaps); // Выведет объект ymaps
-console.log(map); // Выведет объект map
+const features = ref([])
 
 async function initMap() {
   const points = await mapService.findPoints(mapStore);
-  mapService.addPointsToMap(ymaps.value, map.value, points);
+  features.value = mapService.convertPointsToFeatures(points);
 }
 
-function onMapCreated({ ymaps: ymapsInstance, map: mapInstance }) {
-  ymaps.value = ymapsInstance;
-  map.value = mapInstance;
-  initMap();
-}
+watch(() => mapStore.type, async () => {
+  const points = await mapService.findPoints(mapStore);
+  features.value = mapService.convertPointsToFeatures(points);
+});
 
 onMounted(async () => {
   if (navigator.geolocation) {
@@ -54,6 +50,7 @@ onMounted(async () => {
   }
 });
 </script>
+
 <style lang="scss" scoped>
 @import "my-map";
 </style>

@@ -17,27 +17,25 @@ export default {
         return response.data; // возвращаем весь ответ
     },
 
-    addPointsToMap(map, data) {
-        // Проверяем, определены ли данные
-        if (!data) {
-            console.error(`Data is undefined or null: ${data}`);
-            return;
-        }
+    convertPointsToFeatures(data) {
+        const features = [];
 
         // Обрабатываем каждый массив в данных
         Object.entries(data).forEach(([key, points]) => {
             // Если массив не пустой, обрабатываем его точки
             if (points.length > 0) {
-                points.forEach(point => {
+                points.forEach((point, index) => {
                     // Если поле name отсутствует, используем стандартное значение
                     let name = point.name;
                     if (!name) {
                         name = (key === 'atms') ? 'Банкомат ВТБ' : 'Отделение ВТБ';
                     }
 
-                    var myGeoObject = new ymaps.GeoObject({
+                    features.push({
+                        type: 'Feature',
+                        id: index,
                         geometry: {
-                            type: "Point",
+                            type: 'Point',
                             coordinates: [point.latitude, point.longitude]
                         },
                         properties: {
@@ -45,14 +43,11 @@ export default {
                             balloonContentHeader: name,
                             balloonContentBody: point.address
                         }
-                    }, {
-                        preset: "islands#redDotIcon",
-                        draggable: true
                     });
-
-                    map.geoObjects.add(myGeoObject);
                 });
             }
         });
+
+        return features;
     }
 };
