@@ -7,7 +7,7 @@
         <el-radio size="large" label="Atm">Банкоматы</el-radio>
       </el-radio-group>
     </div>
-    <YandexMap class="map__yandex" :coordinates="coordinates">
+    <YandexMap class="map__yandex" :coordinates="coordinates" @created="onMapCreated">
       <YandexMarker type="Point" :marker-id="markerId" :coordinates="coordinates"/>
     </YandexMap>
   </div>
@@ -22,6 +22,22 @@ import mapService from '@/services/mapService';
 const coordinates = ref([55.751244, 37.618423]); // Координаты Москвы по умолчанию
 const mapStore = useMapStore();
 const markerId = ref(1)
+const ymaps = ref();
+const map = ref();
+
+console.log(ymaps); // Выведет объект ymaps
+console.log(map); // Выведет объект map
+
+async function initMap() {
+  const points = await mapService.findPoints(mapStore);
+  mapService.addPointsToMap(ymaps.value, map.value, points);
+}
+
+function onMapCreated({ ymaps: ymapsInstance, map: mapInstance }) {
+  ymaps.value = ymapsInstance;
+  map.value = mapInstance;
+  initMap();
+}
 
 onMounted(async () => {
   if (navigator.geolocation) {
@@ -30,9 +46,6 @@ onMounted(async () => {
       mapStore.location.latitude = position.coords.latitude;
       mapStore.location.longitude = position.coords.longitude;
       mapStore.location.radius = 3000; // радиус в метрах
-
-      const points = await mapService.findPoints(mapStore);
-      mapService.addPointsToMap(ymaps, points);
     }, () => {
       console.log('Геолокация не разрешена пользователем');
     });
@@ -41,7 +54,6 @@ onMounted(async () => {
   }
 });
 </script>
-
 <style lang="scss" scoped>
 @import "my-map";
 </style>
